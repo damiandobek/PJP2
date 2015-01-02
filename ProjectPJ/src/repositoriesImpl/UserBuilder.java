@@ -16,6 +16,7 @@ public class UserBuilder implements IEntityBuilder<User> {
 		result.setUserRank(rs.getString("rank"));
 		result.setLogin(rs.getString("login"));
 		result.setPassword(rs.getString("password"));
+		result.setAddressEmail(rs.getString("email"));
 		return result;
 	}
 
