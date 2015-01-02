@@ -1,20 +1,20 @@
 package repositoriesImpl;
 
 import java.sql.*;
-import domain.User;
+import java.util.List;
 
-public class UserRepository
-extends Repository<User>{
+import repositories.IUserRepository;
+import unitofwork.IUnitOfWork;
 
-	protected String insertSql=
-			"INSERT INTO users(login,password)"
-					+ "VALUES(?,?)";
 
-	protected String updateSql=
-			"UPDATE users SET (login,password)=(?,?) WHERE id=?";
+import domain.*;
 
-	public UserRepository(Connection connection, IEntityBuilder<User> builder) {
-			super(connection,builder);
+public class UserRepository extends Repository<User> implements IUserRepository{
+
+//extends Repository<User> implements IUserRepository{
+
+	public UserRepository(Connection connection, IEntityBuilder<User> builder, IUnitOfWork uow) {
+		super(connection, builder);
 	}
 
 	@Override
@@ -24,12 +24,14 @@ extends Repository<User>{
 
 	@Override
 	protected String getUpdateQuery() {
-		return updateSql;
+		return
+				"UPDATE users SET (login,password)=(?,?) WHERE id=?";
 	}
 
 	@Override
 	protected String getInsertQuery() {
-		return insertSql;
+		return "INSERT INTO users(login,password)"
+				+ "VALUES(?,?)";
 	}
 
 	@Override
@@ -37,12 +39,30 @@ extends Repository<User>{
 		insert.setString(1, entity.getLogin());
 		insert.setString(2, entity.getPassword());
 	}
-	
+
 	@Override
 	protected void setUpUpdateQuery(User entity) throws SQLException {
 		update.setString(1, entity.getLogin());
 		update.setString(2, entity.getPassword());
 		update.setInt(3, entity.getId());
+}
+
+	@Override
+	public List<User> withRole(Role role) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<User> withRole(String roleName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<User> withRole(int roleId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

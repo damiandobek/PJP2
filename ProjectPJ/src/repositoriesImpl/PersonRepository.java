@@ -7,15 +7,17 @@ import java.sql.SQLException;
 //import java.util.ArrayList;
 //import java.util.List;
 
+
+
+
+import unitofwork.IUnitOfWork;
 import domain.Person;
 //import repositories.IRepository;
 
-public class PersonRepository
-
-	extends Repository<Person>{
+public class PersonRepository extends Repository<Person>{
 	
 	protected PersonRepository(Connection connection,
-			IEntityBuilder<Person> builder) {
+			IEntityBuilder<Person> builder, IUnitOfWork uow) {
 		super(connection, builder);
 	}
 

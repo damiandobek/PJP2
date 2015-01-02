@@ -8,11 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import repositories.IRepository;
+import unitofwork.IUnitOfWork;
 import domain.Entity;
 
 public abstract class Repository<TEntity extends Entity>
 	implements IRepository<TEntity>{
 	
+	protected IUnitOfWork uow;
 	protected Connection connection;
 	protected PreparedStatement selectByID;
 	protected PreparedStatement insert;
@@ -84,11 +86,48 @@ public abstract class Repository<TEntity extends Entity>
 			delete.setInt(1, entity.getId());
 			delete.executeUpdate();
 		} catch (SQLException e) {
+			
 			e.printStackTrace();
 		}
 		
 	}
 
+	public void persistAdd(Entity entity) {
+	
+		try {
+			setUpInsertQuery((TEntity)entity);
+			insert.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	public void persistUpdate(Entity entity) {
+	
+		try {
+			setUpUpdateQuery((TEntity)entity);
+			update.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void persistDelete(Entity entity) {
+	
+		try {
+			delete.setInt(1, entity.getId());
+			delete.executeUpdate();
+		
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public TEntity get(int id) {
 

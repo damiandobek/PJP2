@@ -4,16 +4,22 @@ import java.sql.*;
 import domain.*;
 import repositories.*;
 import repositoriesImpl.*;
+import unitofwork.IUnitOfWork;
+import unitofwork.UnitOfWork;
 public class Main {
 
 	public static void main(String[] args) {
+		
 		String url="jdbc:hsqldb:hsql://localhost/workdb";
+		
 		User ddobek = new User();
 		ddobek.setLogin("DamianDobek");
 		ddobek.setPassword("admin1");
+		
 		try {
 			
 			Connection connection = DriverManager.getConnection(url);
+			IUnitOfWork uow = new UnitOfWork(connection);
 			/*
 			String createTableSql = 
 					"CREATE TABLE users("
@@ -25,19 +31,20 @@ public class Main {
 			createTable.executeUpdate(createTableSql);
 			*/
 			
-			IRepository<User> users = new UserRepository(connection, new UserBuilder());
-			users.save(ddobek);
-			List<User> usersFromDb = users.getAll();
+			IRepositoryCatalog catalog = new RepositoryCatalog(connection, uow);
+			
+			catalog.getUsers().save(ddobek);
+			List<User> usersFromDb = catalog.getUsers().getAll();
 			
 			for(User userFromDb: usersFromDb)
 				System.out.println(userFromDb.getId()+" "+userFromDb.getLogin()+" "+userFromDb.getPassword());
 			
-			User a = users.get(2);
+			User a = catalog.getUsers().get(2);
 			a.setPassword("admin2");
-			users.update(a);
-			users.delete(usersFromDb.get(0));
+			catalog.getUsers().update(a);
+			catalog.getUsers().delete(usersFromDb.get(0));
 			
-			for(User userFromDb: users.getAll())
+			for(User userFromDb: catalog.getUsers().getAll())
 				System.out.println(userFromDb.getId()+" "+userFromDb.getLogin()+" "+userFromDb.getPassword());
 			
 			
